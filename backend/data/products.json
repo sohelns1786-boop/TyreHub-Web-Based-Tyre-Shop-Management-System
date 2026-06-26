@@ -1,0 +1,15 @@
+[
+  {
+    "_id": "6ou3h6w",
+    "name": "Alenza AL01",
+    "brand": "Bridgestone",
+    "category": "Car Tyres",
+    "vehicleType": "Car",
+    "size": "215/60 R17",
+    "price": 8500,
+    "stock": 20,
+    "description": "Premium SUV Tyre",
+    "createdAt": "2026-06-26T14:28:18.849Z",
+    "updatedAt": "2026-06-26T14:28:18.880Z"
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "_id": "1hymmp0",
+    "invoiceNumber": "INV-20260626-9110",
+    "customerName": "Alice",
+    "customerPhone": "9876543210",
+    "productId": "6ou3h6w",
+    "productName": "Alenza AL01",
+    "brand": "Bridgestone",
+    "category": "Car Tyres",
+    "size": "215/60 R17",
+    "quantity": 6,
+    "unitPrice": 8200,
+    "totalAmount": 49200,
+    "paymentMethod": "Card",
+    "salesperson": "Admin Test",
+    "status": "Cancelled",
+    "createdAt": "2026-06-26T14:28:18.853Z",
+    "updatedAt": "2026-06-26T14:28:18.881Z"
+  }
+]

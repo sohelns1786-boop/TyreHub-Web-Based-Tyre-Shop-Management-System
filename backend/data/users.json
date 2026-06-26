@@ -1,0 +1,38 @@
+[
+  {
+    "_id": "2vz5hru",
+    "name": "TyreHub Admin",
+    "email": "admin@tyrehub.com",
+    "password": "$2a$12$SbfeUmKvmG2tIP50tUAxMe6C6rXg3fMEoHksaItUUBmpGeZYlYYAi",
+    "role": "admin",
+    "createdAt": "2026-06-20T05:04:50.655Z",
+    "updatedAt": "2026-06-20T05:04:50.655Z"
+  },
+  {
+    "_id": "s2husnh",
+    "name": "Rasheed Tyres Admin",
+    "email": "rasheedtyresplanet@gmail.com",
+    "password": "$2a$12$SbfeUmKvmG2tIP50tUAxMe6C6rXg3fMEoHksaItUUBmpGeZYlYYAi",
+    "role": "admin",
+    "createdAt": "2026-06-20T05:04:50.656Z",
+    "updatedAt": "2026-06-20T05:04:50.656Z"
+  },
+  {
+    "_id": "5vei7jo",
+    "name": "Sohel NS Admin",
+    "email": "sohelns1786@gmail.com",
+    "password": "$2a$12$SbfeUmKvmG2tIP50tUAxMe6C6rXg3fMEoHksaItUUBmpGeZYlYYAi",
+    "role": "admin",
+    "createdAt": "2026-06-20T05:04:50.656Z",
+    "updatedAt": "2026-06-20T05:04:50.656Z"
+  },
+  {
+    "_id": "qy3kd86",
+    "name": "Sohel Mahiniyaz",
+    "email": "sohel@gmail.com",
+    "password": "$2a$10$AG2pMql1TUpepXMMC7zRCeC0VJ4temasbW/VkgVxZAqQM2ThNnIEa",
+    "role": "user",
+    "createdAt": "2026-06-20T06:00:27.751Z",
+    "updatedAt": "2026-06-20T06:00:27.751Z"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "name": "tyrehub-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root workspace configuration for TyreHub (Rasheed Tyres Planet)",
+  "scripts": {
+    "install:backend": "npm install --prefix backend",
+    "install:frontend": "npm install --prefix frontend",
+    "install:all": "npm install && npm run install:backend && npm run install:frontend",
+    "postinstall": "npm run install:backend && npm run install:frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "seed": "npm run seed --prefix backend",
+    "build": "npm run build --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

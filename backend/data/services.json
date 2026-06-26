@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "arzu39e",
+    "name": "Wheel Alignment",
+    "description": "Precision wheel alignment for balanced steering and longer tyre life.",
+    "image": "https://via.placeholder.com/500x300?text=Wheel+Alignment",
+    "createdAt": "2026-06-20T05:04:50.657Z",
+    "updatedAt": "2026-06-20T05:04:50.657Z"
+  },
+  {
+    "_id": "xfclxad",
+    "name": "Wheel Balancing",
+    "description": "Professional balancing for smoother ride quality and tyre safety.",
+    "image": "https://via.placeholder.com/500x300?text=Wheel+Balancing",
+    "createdAt": "2026-06-20T05:04:50.657Z",
+    "updatedAt": "2026-06-20T05:04:50.657Z"
+  },
+  {
+    "_id": "qv7n83z",
+    "name": "Nitrogen Filling",
+    "description": "Nitrogen inflation for stable pressure and cooler running temperatures.",
+    "image": "https://via.placeholder.com/500x300?text=Nitrogen+Filling",
+    "createdAt": "2026-06-20T05:04:50.657Z",
+    "updatedAt": "2026-06-20T05:04:50.657Z"
+  },
+  {
+    "_id": "fu40z42",
+    "name": "Puncture Repair",
+    "description": "Fast puncture repair using trusted materials to get you back on road.",
+    "image": "https://via.placeholder.com/500x300?text=Puncture+Repair",
+    "createdAt": "2026-06-20T05:04:50.657Z",
+    "updatedAt": "2026-06-20T05:04:50.657Z"
+  },
+  {
+    "_id": "4xkk58k",
+    "name": "Tyre Replacement",
+    "description": "Full tyre replacement service with the right fit and expert fitting.",
+    "image": "https://via.placeholder.com/500x300?text=Tyre+Replacement",
+    "createdAt": "2026-06-20T05:04:50.657Z",
+    "updatedAt": "2026-06-20T05:04:50.657Z"
+  }
+]
