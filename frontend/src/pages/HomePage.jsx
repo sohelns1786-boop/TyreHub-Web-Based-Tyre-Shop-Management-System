@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ReactPlayer from 'react-player';
 import BrandsSection from '../components/BrandsSection';
 import BrandsCarousel from '../components/BrandsCarousel';
 
@@ -20,21 +21,44 @@ export default function HomePage() {
 
   return (
     <div className="relative overflow-hidden">
-      <section className="relative min-h-[80vh] bg-[radial-gradient(circle_at_top,_rgba(225,6,0,0.25),_transparent_45%)] px-4 py-20 sm:px-6 flex items-center">
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0">
-            <iframe
-              className="absolute top-1/2 left-1/2 min-w-full min-h-full w-[177.77vw] h-[56.25vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none object-cover scale-125 opacity-30"
-              src={EMBED_SRC}
-              title="Hero Background Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            ></iframe>
-            <div className="absolute inset-0 bg-black/50" aria-hidden="true"></div>
+      <motion.section 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="relative min-h-[80vh] flex items-center justify-center px-4 py-20 sm:px-6"
+      >
+        <div className="absolute inset-0 -z-10 overflow-hidden bg-black flex items-center justify-center">
+          <div className="absolute w-[300vw] h-[300vh] sm:w-[150vw] sm:h-[150vh] pointer-events-none opacity-80">
+            <ReactPlayer
+              url="https://www.youtube.com/watch?v=FKeM-5Xk94o"
+              playing
+              loop
+              muted
+              playsinline
+              width="100%"
+              height="100%"
+              config={{
+                youtube: {
+                  playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    showinfo: 0,
+                    modestbranding: 1,
+                    rel: 0,
+                    disablekb: 1,
+                    fs: 0,
+                    enablejsapi: 1,
+                    iv_load_policy: 3
+                  }
+                }
+              }}
+              style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+            />
           </div>
+          <div className="absolute inset-0 bg-black/60" aria-hidden="true"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(225,6,0,0.15),_transparent_45%)]" aria-hidden="true"></div>
         </div>
-        <div className="relative mx-auto max-w-6xl text-center text-white">
+        <div className="relative mx-auto max-w-6xl text-center text-white z-10">
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -57,24 +81,15 @@ export default function HomePage() {
             transition={{ duration: 0.75, delay: 0.3 }}
             className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
           >
-            <Link to="/tyres" className="rounded-full bg-primary px-8 py-3 text-sm font-semibold uppercase tracking-[0.18em] transition hover:bg-white hover:text-black">
+            <Link to="/tyres" className="rounded-full bg-primary px-8 py-3 text-sm font-semibold uppercase tracking-[0.18em] transition hover:bg-white hover:text-black shadow-lg shadow-primary/20">
               Explore Tyres
             </Link>
-            <button
-              onClick={() => setIsVideoOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-8 py-3 text-sm font-semibold uppercase tracking-[0.18em] transition hover:border-primary hover:text-primary hover:bg-black/60"
-            >
-              <svg className="h-4 w-4 fill-current text-primary" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              Watch Video
-            </button>
-            <Link to="/contact" className="rounded-full border border-white/20 px-8 py-3 text-sm font-semibold uppercase tracking-[0.18em] transition hover:border-primary hover:text-primary">
+            <Link to="/contact" className="rounded-full border border-white/20 bg-black/40 backdrop-blur-md px-8 py-3 text-sm font-semibold uppercase tracking-[0.18em] transition hover:border-primary hover:text-primary hover:bg-black/60">
               Contact Us
             </Link>
           </motion.div>
         </div>
-      </section>
+      </motion.section>
       {/* Brands carousel (auto-scrolling) */}
       <BrandsCarousel />
 

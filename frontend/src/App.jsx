@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
@@ -33,7 +33,8 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/profile" element={<ProtectedRoute requireAdmin={false}><ProfilePage /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+            <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="/admin/dashboard" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
             <Route path="/admin/product/new" element={<ProtectedRoute><ProductFormPage /></ProtectedRoute>} />
             <Route path="/admin/product/:id/edit" element={<ProtectedRoute><ProductFormPage /></ProtectedRoute>} />
             <Route path="*" element={<NotFoundPage />} />

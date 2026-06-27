@@ -12,9 +12,17 @@ const productSchema = new mongoose.Schema(
     vehicleType: { type: String, required: true, trim: true, enum: VEHICLE_TYPES },
     size: { type: String, required: true, trim: true },
     price: { type: Number, required: true, min: 0 },
+    mrp: { type: Number, min: 0 },
+    discount: { type: Number, min: 0, default: 0 },
     stock: { type: Number, required: true, min: 0 },
     description: { type: String, trim: true },
+    sku: { type: String, trim: true },
+    productCode: { type: String, trim: true },
+    tyreType: { type: String, trim: true, enum: ['Tubeless', 'Tube Type'], default: 'Tubeless' },
+    specifications: { type: String, trim: true },
+    warranty: { type: String, trim: true },
     image: { type: String, trim: true, default: '' },
+    images: [{ type: String, trim: true }]
   },
   { timestamps: true }
 );

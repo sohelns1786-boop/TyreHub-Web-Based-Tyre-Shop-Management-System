@@ -17,5 +17,24 @@
     "status": "Cancelled",
     "createdAt": "2026-06-26T14:28:18.853Z",
     "updatedAt": "2026-06-26T14:28:18.881Z"
+  },
+  {
+    "_id": "l1gnouo",
+    "invoiceNumber": "INV-20260627-9378",
+    "customerName": "SOHEL",
+    "customerPhone": "9182736329",
+    "productId": "bncewmx",
+    "productName": "MRF Zapper Pro Bike Tyre",
+    "brand": "MRF",
+    "category": "Bike Tyres",
+    "size": "2.75-18",
+    "quantity": 1,
+    "unitPrice": 2165,
+    "totalAmount": 2165,
+    "paymentMethod": "UPI",
+    "salesperson": "TyreHub Admin",
+    "status": "Completed",
+    "createdAt": "2026-06-27T09:22:31.720Z",
+    "updatedAt": "2026-06-27T09:22:31.720Z"
   }
 ]

@@ -33,7 +33,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Editor configurations
-.vscode/settings.json
+.vscode/
 .idea/
 *.suo
 *.ntvs*

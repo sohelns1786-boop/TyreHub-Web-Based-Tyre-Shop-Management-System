@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../api/config';
 import SalesTab from '../components/SalesTab';
 
 const getImageUrl = (imagePath) => {
-  if (!imagePath) return 'https://via.placeholder.com/150?text=No+Photo';
+  if (!imagePath) return 'https://placehold.co/150x150/151515/FACC15?text=No+Photo';
   if (imagePath.startsWith('/')) {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
       return imagePath;
@@ -354,7 +354,9 @@ export default function AdminPanel() {
                           <img
                             src={getImageUrl(tyre.image)}
                             alt={tyre.name}
-                            className="h-10 w-10 rounded-xl object-cover border border-white/10"
+                            loading="lazy"
+                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/150x150/151515/FACC15?text=No+Photo'; }}
+                            className="h-10 w-10 rounded-xl object-contain border border-white/10 bg-white/5"
                           />
                           <div>
                             <h4 className="text-sm font-bold text-white leading-tight">{tyre.name}</h4>
@@ -520,7 +522,9 @@ export default function AdminPanel() {
                               <img
                                 src={getImageUrl(product.image)}
                                 alt={product.name}
-                                className="h-12 w-12 rounded-xl object-cover border border-white/10 shadow-md bg-white/5"
+                                loading="lazy"
+                                onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/150x150/151515/FACC15?text=No+Photo'; }}
+                                className="h-12 w-12 rounded-xl object-contain border border-white/10 shadow-md bg-white/5 p-1"
                               />
                             </td>
 

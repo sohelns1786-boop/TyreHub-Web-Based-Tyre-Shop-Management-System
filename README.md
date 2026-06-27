@@ -173,3 +173,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Author Information
 Developed by **Rasheed Tyres Planet** / **Sohel NS**. 
 For enquiries or business assistance, contact us at rasheedtyresplanet@gmail.com.
+
+### Team Name: Elight Developer's
+**Team Members:**
+- NS Sohel Mahiniyaz
+- N Bhupal Reddy
+- M Sai Teja

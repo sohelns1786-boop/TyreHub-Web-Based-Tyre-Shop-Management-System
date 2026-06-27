@@ -44,15 +44,20 @@ export function AuthProvider({ children }) {
   // Auth State Listener
   useEffect(() => {
     if (!hasFirebaseConfig) {
-      // In mock mode, check if there is an existing local storage user
-      try {
-        const u = JSON.parse(localStorage.getItem('tyrehub_user') || 'null');
-        setUser(u);
-      } catch {
-        setUser(null);
-      }
-      setLoading(false);
-      return;
+      const loadLocalUser = () => {
+        try {
+          const u = JSON.parse(localStorage.getItem('tyrehub_user') || 'null');
+          setUser(u);
+        } catch {
+          setUser(null);
+        }
+        setLoading(false);
+      };
+      
+      loadLocalUser();
+      
+      window.addEventListener('auth-change', loadLocalUser);
+      return () => window.removeEventListener('auth-change', loadLocalUser);
     }
 
     const unsubscribe = onIdTokenChanged(auth, async (firebaseUser) => {
@@ -146,6 +151,7 @@ export function AuthProvider({ children }) {
     }
     try {
       const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
       const userCredential = await signInWithPopup(auth, provider);
       const backendUser = await syncWithBackend(userCredential.user);
       return backendUser;

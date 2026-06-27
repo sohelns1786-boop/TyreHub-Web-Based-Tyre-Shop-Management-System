@@ -4,10 +4,16 @@ const uploadDir = 'uploads';
 exports.getProducts = async (req, res, next) => {
   try {
     const filters = {};
-    const { vehicleType, brand, size, minPrice, maxPrice, search } = req.query;
+    const { vehicleType, brand, size, minPrice, maxPrice, search, stockStatus, category } = req.query;
     if (vehicleType) filters.vehicleType = vehicleType;
+    if (category) filters.category = category;
     if (brand) filters.brand = brand;
     if (size) filters.size = size;
+    if (stockStatus) {
+      if (stockStatus === 'In Stock') filters.stock = { $gt: 5 };
+      if (stockStatus === 'Low Stock') filters.stock = { $gt: 0, $lte: 5 };
+      if (stockStatus === 'Out of Stock') filters.stock = { $lte: 0 };
+    }
     if (minPrice || maxPrice) {
       filters.price = {};
       if (minPrice) filters.price.$gte = Number(minPrice);
@@ -17,6 +23,8 @@ exports.getProducts = async (req, res, next) => {
       filters.$or = [
         { name: { $regex: search, $options: 'i' } },
         { brand: { $regex: search, $options: 'i' } },
+        { sku: { $regex: search, $options: 'i' } },
+        { size: { $regex: search, $options: 'i' } },
       ];
     }
 
@@ -41,12 +49,12 @@ exports.getProductById = async (req, res, next) => {
 
 exports.createProduct = async (req, res, next) => {
   try {
-    const { name, brand, category, vehicleType, size, price, stock, description } = req.body;
+    const { name, brand, category, vehicleType, size, price, stock, description, mrp, discount, sku, productCode, tyreType, specifications, warranty, images } = req.body;
     let image = req.body.image || '';
     if (req.file) {
       image = `/${uploadDir}/${req.file.filename}`;
     }
-    const product = await Product.create({ name, brand, category, vehicleType, size, price, stock, description, image });
+    const product = await Product.create({ name, brand, category, vehicleType, size, price, stock, description, image, mrp, discount, sku, productCode, tyreType, specifications, warranty, images: images || [] });
     res.status(201).json(product);
   } catch (error) {
     next(error);

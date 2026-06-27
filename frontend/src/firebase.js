@@ -10,7 +10,9 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const hasFirebaseConfig = Object.values(firebaseConfig).every(Boolean);
+const hasFirebaseConfig = Object.values(firebaseConfig).every(
+  (val) => Boolean(val) && !String(val).includes('your-firebase-')
+);
 const firebaseApp = hasFirebaseConfig ? initializeApp(firebaseConfig) : null;
 const auth = hasFirebaseConfig ? getAuth(firebaseApp) : null;
 

@@ -10,9 +10,17 @@ const initialState = {
   vehicleType: 'Bike',
   size: '',
   price: '',
+  mrp: '',
+  discount: '',
   stock: '',
+  sku: '',
+  productCode: '',
+  tyreType: 'Tubeless',
+  specifications: '',
+  warranty: '',
   description: '',
   image: '',
+  images: '',
   imageFile: null,
   imagePreview: '',
 };
@@ -34,6 +42,7 @@ export default function ProductFormPage() {
           ...response.data,
           price: response.data.price,
           stock: response.data.stock,
+          images: Array.isArray(response.data.images) ? response.data.images.join(', ') : '',
           image: response.data.image || '',
           imageFile: null,
           imagePreview: response.data.image || '',
@@ -70,8 +79,17 @@ export default function ProductFormPage() {
       formData.append('vehicleType', product.vehicleType);
       formData.append('size', product.size);
       formData.append('price', product.price);
+      formData.append('mrp', product.mrp);
+      formData.append('discount', product.discount);
       formData.append('stock', product.stock);
+      formData.append('sku', product.sku);
+      formData.append('productCode', product.productCode);
+      formData.append('tyreType', product.tyreType);
+      formData.append('specifications', product.specifications);
+      formData.append('warranty', product.warranty);
       formData.append('description', product.description);
+      const imagesArr = product.images ? product.images.split(',').map(s => s.trim()) : [];
+      imagesArr.forEach(img => formData.append('images[]', img));
       if (product.imageFile) {
         formData.append('image', product.imageFile);
       } else if (product.image) {
@@ -132,10 +150,25 @@ export default function ProductFormPage() {
             <option value="Lorry">Lorry</option>
           </select>
           <input name="size" value={product.size} onChange={handleChange} required placeholder="Size" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
-          <input name="price" value={product.price} onChange={handleChange} required type="number" placeholder="Price" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
-          <input name="stock" value={product.stock} onChange={handleChange} required type="number" placeholder="Stock" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+          <div className="grid grid-cols-3 gap-4">
+            <input name="price" value={product.price} onChange={handleChange} required type="number" placeholder="Price" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+            <input name="mrp" value={product.mrp} onChange={handleChange} type="number" placeholder="MRP" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+            <input name="discount" value={product.discount} onChange={handleChange} type="number" placeholder="Discount %" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+          </div>
+          <div className="grid grid-cols-3 gap-4">
+            <input name="stock" value={product.stock} onChange={handleChange} required type="number" placeholder="Stock" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+            <input name="sku" value={product.sku} onChange={handleChange} placeholder="SKU" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+            <input name="productCode" value={product.productCode} onChange={handleChange} placeholder="Product Code" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+          </div>
+          <select name="tyreType" value={product.tyreType} onChange={handleChange} className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary">
+            <option value="Tubeless">Tubeless</option>
+            <option value="Tube Type">Tube Type</option>
+          </select>
+          <input name="specifications" value={product.specifications} onChange={handleChange} placeholder="Specifications" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+          <input name="warranty" value={product.warranty} onChange={handleChange} placeholder="Warranty" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
           <textarea name="description" value={product.description} onChange={handleChange} rows="4" placeholder="Description" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
-          <input name="image" value={product.image} onChange={handleChange} placeholder="Image URL" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+          <input name="image" value={product.image} onChange={handleChange} placeholder="Main Image URL" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+          <input name="images" value={product.images} onChange={handleChange} placeholder="Additional Image URLs (comma separated)" className="rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
           <div>
             <label className="mb-2 block text-sm text-white/80" htmlFor="imageFile">Upload Image</label>
             <input id="imageFile" type="file" accept="image/*" onChange={handleFileChange} className="w-full text-sm text-white/80 file:cursor-pointer file:rounded-full file:border file:border-white/10 file:bg-white/5 file:px-4 file:py-2 file:text-white" />
@@ -143,7 +176,13 @@ export default function ProductFormPage() {
           {previewUrl && (
             <div className="rounded-3xl border border-white/10 bg-black/80 p-4">
               <p className="text-sm text-white/70">Image preview</p>
-              <img src={previewUrl} alt="Product preview" className="mt-4 h-64 w-full rounded-2xl object-cover" />
+              <img 
+                src={previewUrl} 
+                alt="Product preview" 
+                loading="lazy"
+                onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/800x600/151515/FACC15?text=Preview+Unavailable'; }}
+                className="mt-4 h-64 w-full rounded-2xl object-contain bg-white/5" 
+              />
             </div>
           )}
           <button disabled={loading} type="submit" className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-black transition hover:bg-white disabled:opacity-50">

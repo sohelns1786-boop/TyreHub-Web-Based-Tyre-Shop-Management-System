@@ -31,13 +31,13 @@ export default function LoginPage() {
         saveAdminSession(user, token);
         window.dispatchEvent(new Event('auth-change'));
         addToast('Sign in successful! (Mock Mode)', 'success');
-        navigate(user.role === 'admin' ? '/admin' : '/');
+        navigate(user.role === 'admin' ? '/admin/dashboard' : '/');
         return;
       }
       
       const backendUser = await loginWithEmail(form.email, form.password);
       addToast('Sign in successful!', 'success');
-      navigate(backendUser.role === 'admin' ? '/admin' : '/');
+      navigate(backendUser.role === 'admin' ? '/admin/dashboard' : '/');
     } catch (err) {
       addToast(err?.message || 'Login failed. Please check your credentials.', 'error');
     } finally {
@@ -55,7 +55,7 @@ export default function LoginPage() {
     try {
       const backendUser = await loginWithGoogle();
       addToast('Google Sign-In successful!', 'success');
-      navigate(backendUser.role === 'admin' ? '/admin' : '/');
+      navigate(backendUser.role === 'admin' ? '/admin/dashboard' : '/');
     } catch (err) {
       addToast(err?.message || 'Google sign-in failed. Please try again.', 'error');
     } finally {
@@ -75,7 +75,7 @@ export default function LoginPage() {
       
       window.dispatchEvent(new Event('auth-change'));
       addToast(`Mock Signed In as ${backendUser.name}`, 'success');
-      navigate(backendUser.role === 'admin' ? '/admin' : '/');
+      navigate(backendUser.role === 'admin' ? '/admin/dashboard' : '/');
     } catch (err) {
       addToast(err?.response?.data?.message || 'Mock Google login failed.', 'error');
     } finally {

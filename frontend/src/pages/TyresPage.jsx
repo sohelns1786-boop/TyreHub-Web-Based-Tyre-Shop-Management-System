@@ -8,7 +8,7 @@ export default function TyresPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({ vehicleType: 'All', brand: '', size: '', search: '', minPrice: '', maxPrice: '', sort: '' });
+  const [filters, setFilters] = useState({ vehicleType: 'All', brand: '', size: '', search: '', minPrice: '', maxPrice: '', sort: '', stockStatus: '' });
 
   const [selectedTyre, setSelectedTyre] = useState(null);
 
@@ -23,6 +23,7 @@ export default function TyresPage() {
       if (filters.minPrice) params.minPrice = filters.minPrice;
       if (filters.maxPrice) params.maxPrice = filters.maxPrice;
       if (filters.search) params.search = filters.search;
+      if (filters.stockStatus) params.stockStatus = filters.stockStatus;
       const res = await api.get('/products', { params });
       let data = res.data || [];
       if (filters.sort === 'price_asc') data = data.sort((a, b) => a.price - b.price);
@@ -75,10 +76,16 @@ export default function TyresPage() {
         <input name="size" value={filters.size} onChange={handleFilterChange} placeholder="Size" className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white" />
         <input name="minPrice" value={filters.minPrice} onChange={handleFilterChange} placeholder="Min Price" type="number" className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white" />
         <input name="maxPrice" value={filters.maxPrice} onChange={handleFilterChange} placeholder="Max Price" type="number" className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white" />
+        <select name="stockStatus" value={filters.stockStatus} onChange={handleFilterChange} className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white">
+          <option value="" className="bg-[#111111]">Stock Status</option>
+          <option value="In Stock" className="bg-[#111111]">In Stock</option>
+          <option value="Low Stock" className="bg-[#111111]">Low Stock</option>
+          <option value="Out of Stock" className="bg-[#111111]">Out of Stock</option>
+        </select>
         <select name="sort" value={filters.sort} onChange={handleFilterChange} className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white">
-          <option value="">Sort</option>
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
+          <option value="" className="bg-[#111111]">Sort</option>
+          <option value="price_asc" className="bg-[#111111]">Price: Low to High</option>
+          <option value="price_desc" className="bg-[#111111]">Price: High to Low</option>
         </select>
         <button onClick={fetchProducts} className="ml-auto rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white">Apply</button>
       </div>
@@ -93,7 +100,7 @@ export default function TyresPage() {
             onClick={() => setSelectedTyre(tyre)}
             className="group cursor-pointer overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-xl shadow-black/10 hover:border-primary/40 transition duration-300 transform hover:-translate-y-1"
           >
-            <div className="overflow-hidden relative h-52">
+            <div className="relative flex h-72 w-full items-center justify-center overflow-hidden bg-white/5 p-6">
               <img
                 src={
                   tyre.image
@@ -102,12 +109,14 @@ export default function TyresPage() {
                         ? tyre.image
                         : `${API_BASE_URL.replace(/\/api$/, '')}${tyre.image}`
                       : tyre.image
-                    : 'https://via.placeholder.com/400x300?text=Tyre'
+                    : 'https://placehold.co/400x300/151515/FACC15?text=Tyre+Image+Unavailable'
                 }
                 alt={tyre.name}
-                className="h-full w-full object-cover group-hover:scale-105 transition duration-500"
+                loading="lazy"
+                onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/400x300/151515/FACC15?text=Tyre+Image+Unavailable'; }}
+                className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition duration-300" />
+              <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 group-hover:bg-transparent" />
             </div>
             <div className="p-6">
               <span className="text-xs font-semibold tracking-widest text-primary uppercase">{tyre.brand}</span>
@@ -140,7 +149,7 @@ export default function TyresPage() {
             </button>
 
             <div className="grid gap-8 md:grid-cols-2 mt-4">
-              <div className="overflow-hidden rounded-2xl border border-white/10 h-72 sm:h-96">
+              <div className="relative flex h-72 sm:h-96 w-full items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8">
                 <img 
                   src={
                     selectedTyre.image
@@ -149,10 +158,12 @@ export default function TyresPage() {
                           ? selectedTyre.image
                           : `${API_BASE_URL.replace(/\/api$/, '')}${selectedTyre.image}`
                         : selectedTyre.image
-                      : 'https://via.placeholder.com/500x500?text=Tyre'
+                      : 'https://placehold.co/500x500/151515/FACC15?text=Tyre+Image+Unavailable'
                   } 
                   alt={selectedTyre.name} 
-                  className="w-full h-full object-cover" 
+                  loading="lazy"
+                  onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/500x500/151515/FACC15?text=Tyre+Image+Unavailable'; }}
+                  className="max-h-full max-w-full object-contain" 
                 />
               </div>
 
@@ -161,8 +172,10 @@ export default function TyresPage() {
                   <span className="text-sm font-semibold tracking-widest text-primary uppercase">{selectedTyre.brand}</span>
                   <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">{selectedTyre.name}</h2>
                   
-                  <div className="mt-4 flex items-center gap-4">
+                  <div className="mt-4 flex flex-wrap items-center gap-4">
                     <span className="text-2xl font-black text-primary">₹{selectedTyre.price}</span>
+                    {selectedTyre.mrp && <span className="text-lg font-medium text-white/50 line-through">₹{selectedTyre.mrp}</span>}
+                    {selectedTyre.discount > 0 && <span className="rounded-full bg-green-500/20 px-2 py-1 text-xs font-bold text-green-400">{selectedTyre.discount}% OFF</span>}
                     <span className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider ${selectedTyre.stock > 5 ? 'bg-green-500/15 text-green-300 border border-green-500/20' : selectedTyre.stock > 0 ? 'bg-yellow-500/15 text-yellow-300 border border-yellow-500/20' : 'bg-red-500/15 text-red-300 border border-red-500/20'}`}>
                       {selectedTyre.stock > 5 ? 'In Stock' : selectedTyre.stock > 0 ? 'Low Stock' : 'Out of Stock'}
                     </span>
@@ -183,6 +196,24 @@ export default function TyresPage() {
                       <span className="text-white/50 text-sm">Category:</span>
                       <span className="font-semibold">{selectedTyre.category}</span>
                     </div>
+                    {selectedTyre.tyreType && (
+                      <div className="grid grid-cols-[100px_1fr]">
+                        <span className="text-white/50 text-sm">Type:</span>
+                        <span className="font-semibold">{selectedTyre.tyreType}</span>
+                      </div>
+                    )}
+                    {selectedTyre.specifications && (
+                      <div className="grid grid-cols-[100px_1fr]">
+                        <span className="text-white/50 text-sm">Specs:</span>
+                        <span className="font-semibold">{selectedTyre.specifications}</span>
+                      </div>
+                    )}
+                    {selectedTyre.warranty && (
+                      <div className="grid grid-cols-[100px_1fr]">
+                        <span className="text-white/50 text-sm">Warranty:</span>
+                        <span className="font-semibold">{selectedTyre.warranty}</span>
+                      </div>
+                    )}
                     <div className="mt-4">
                       <span className="text-white/50 text-sm block mb-1">Description:</span>
                       <p className="text-sm leading-relaxed text-white/70">{selectedTyre.description || 'Premium performance tyre built with advanced rubber compound for enhanced mileage, dry/wet grip, and long-term durability.'}</p>
