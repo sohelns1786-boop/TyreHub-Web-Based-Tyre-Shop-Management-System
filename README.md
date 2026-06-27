@@ -161,6 +161,12 @@ The Express server will automatically serve the built static production index fi
 
 ---
 
+## Screenshots
+
+*(Add screenshots here)*
+
+---
+
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
 
