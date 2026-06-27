@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from './Footer';
+import { useAuth } from '../context/AuthContext';
 
 const navLinks = [
   { label: 'Home', to: '/' },
@@ -11,35 +12,17 @@ const navLinks = [
 ];
 
 export default function Layout({ children }) {
-  const [user, setUser] = useState(null);
+  const { user, logoutUser } = useAuth();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkUser = () => {
-      try {
-        const u = JSON.parse(localStorage.getItem('tyrehub_user') || 'null');
-        setUser(u);
-      } catch {
-        setUser(null);
-      }
-    };
-    checkUser();
-
-    window.addEventListener('storage', checkUser);
-    window.addEventListener('auth-change', checkUser);
-    return () => {
-      window.removeEventListener('storage', checkUser);
-      window.removeEventListener('auth-change', checkUser);
-    };
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('tyrehub_token');
-    localStorage.removeItem('tyrehub_user');
-    setUser(null);
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
     setIsMobileOpen(false);
-    window.dispatchEvent(new Event('auth-change'));
     navigate('/login');
   };
 
@@ -65,10 +48,14 @@ export default function Layout({ children }) {
                     Admin
                   </Link>
                 )}
-                <span className="flex items-center gap-2 text-sm font-medium text-white/80 bg-white/5 rounded-full px-3 py-1 border border-white/5">
-                  <span className="inline-block h-2 w-2 rounded-full bg-green-500"></span>
+                <Link to="/profile" className="flex items-center gap-2 text-sm font-medium text-white/80 bg-white/5 hover:bg-white/10 hover:border-primary/30 transition rounded-full px-3 py-1 border border-white/5">
+                  {user.profilePhoto ? (
+                    <img src={user.profilePhoto} alt={user.name} className="h-5 w-5 rounded-full object-cover" />
+                  ) : (
+                    <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                  )}
                   {user.name}
-                </span>
+                </Link>
                 <button type="button" onClick={handleLogout} className="rounded-full border border-white/10 px-4 py-2 text-sm text-white transition hover:border-primary hover:text-primary">
                   Logout
                 </button>
@@ -129,10 +116,18 @@ export default function Layout({ children }) {
                   Admin Panel
                 </Link>
               )}
-              <div className="flex items-center gap-3 text-lg font-semibold text-white/90 bg-white/5 border border-white/10 px-5 py-2 rounded-full">
-                <span className="h-3.5 w-3.5 rounded-full bg-green-500 animate-pulse"></span>
+              <Link 
+                to="/profile" 
+                onClick={() => setIsMobileOpen(false)} 
+                className="flex items-center gap-3 text-lg font-semibold text-white/90 bg-[#111111]/80 hover:bg-white/5 border border-white/10 px-5 py-2 rounded-full transition"
+              >
+                {user.profilePhoto ? (
+                  <img src={user.profilePhoto} alt={user.name} className="h-6 w-6 rounded-full object-cover" />
+                ) : (
+                  <span className="h-3.5 w-3.5 rounded-full bg-green-500 animate-pulse"></span>
+                )}
                 {user.name}
-              </div>
+              </Link>
               <button 
                 type="button" 
                 onClick={handleLogout} 

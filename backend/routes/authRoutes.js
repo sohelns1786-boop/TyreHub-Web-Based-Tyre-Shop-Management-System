@@ -1,5 +1,5 @@
 const express = require('express');
-const { registerUser, loginUser, getProfile, googleLogin } = require('../controllers/authController');
+const { registerUser, loginUser, getProfile, googleLogin, syncFirebaseUser } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -7,6 +7,7 @@ const router = express.Router();
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/google-login', googleLogin);
+router.post('/firebase-sync', syncFirebaseUser);
 router.get('/profile', protect, getProfile);
 
 module.exports = router;

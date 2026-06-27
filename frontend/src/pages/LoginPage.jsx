@@ -1,18 +1,17 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import api from '../api/axios';
-import { auth, hasFirebaseConfig } from '../firebase';
-import { googleLogin } from '../api/auth';
-import { saveAdminSession, saveGoogleSession } from '../utils/auth';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 export default function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const [showMockModal, setShowMockModal] = useState(false);
   const navigate = useNavigate();
+  const { loginWithEmail, loginWithGoogle, resetPassword, hasFirebaseConfig } = useAuth();
+  const { addToast } = useToast();
 
   const queryParams = new URLSearchParams(window.location.search);
   const isExpired = queryParams.get('expired') === 'true';
@@ -21,23 +20,32 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
     setLoading(true);
     try {
-      const response = await api.post('/auth/login', form);
-      const { token, user } = response.data;
-      saveAdminSession(user, token);
-      window.dispatchEvent(new Event('auth-change'));
-      navigate('/admin');
+      if (!hasFirebaseConfig) {
+        // Fallback for development if Firebase is not configured
+        const api = (await import('../api/axios')).default;
+        const response = await api.post('/auth/login', form);
+        const { token, user } = response.data;
+        const { saveAdminSession } = await import('../utils/auth');
+        saveAdminSession(user, token);
+        window.dispatchEvent(new Event('auth-change'));
+        addToast('Sign in successful! (Mock Mode)', 'success');
+        navigate(user.role === 'admin' ? '/admin' : '/');
+        return;
+      }
+      
+      const backendUser = await loginWithEmail(form.email, form.password);
+      addToast('Sign in successful!', 'success');
+      navigate(backendUser.role === 'admin' ? '/admin' : '/');
     } catch (err) {
-      setError(err?.response?.data?.message || 'Login failed');
+      addToast(err?.message || 'Login failed. Please check your credentials.', 'error');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleSignIn = async () => {
-    setError(null);
     if (!hasFirebaseConfig) {
       setShowMockModal(true);
       return;
@@ -45,40 +53,54 @@ export default function LoginPage() {
 
     setGoogleLoading(true);
     try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      
-      const responseData = await googleLogin(user.email, user.displayName || user.email.split('@')[0]);
-      const { token, user: backendUser } = responseData;
-      
-      saveGoogleSession(backendUser, token);
-      
-      window.dispatchEvent(new Event('auth-change'));
+      const backendUser = await loginWithGoogle();
+      addToast('Google Sign-In successful!', 'success');
       navigate(backendUser.role === 'admin' ? '/admin' : '/');
     } catch (err) {
-      setError(err?.response?.data?.message || 'Google sign-in failed. Please try again.');
+      addToast(err?.message || 'Google sign-in failed. Please try again.', 'error');
     } finally {
       setGoogleLoading(false);
     }
   };
 
   const handleMockSignIn = async (email, name) => {
-    setError(null);
     setGoogleLoading(true);
     setShowMockModal(false);
     try {
+      const { googleLogin } = await import('../api/auth');
       const responseData = await googleLogin(email, name);
       const { token, user: backendUser } = responseData;
-      
+      const { saveGoogleSession } = await import('../utils/auth');
       saveGoogleSession(backendUser, token);
       
       window.dispatchEvent(new Event('auth-change'));
+      addToast(`Mock Signed In as ${backendUser.name}`, 'success');
       navigate(backendUser.role === 'admin' ? '/admin' : '/');
     } catch (err) {
-      setError(err?.response?.data?.message || 'Mock Google login failed.');
+      addToast(err?.response?.data?.message || 'Mock Google login failed.', 'error');
     } finally {
       setGoogleLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!form.email) {
+      addToast('Please enter your email address in the Email field first.', 'warning');
+      return;
+    }
+    if (!hasFirebaseConfig) {
+      addToast('Password reset is not available in mock mode.', 'error');
+      return;
+    }
+
+    setResetLoading(true);
+    try {
+      await resetPassword(form.email);
+      addToast('Password reset link sent to your email inbox.', 'success');
+    } catch (err) {
+      addToast(err.message || 'Failed to send password reset email.', 'error');
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -91,7 +113,6 @@ export default function LoginPage() {
             ⚠️ Your session has expired or is invalid. Please sign in again.
           </div>
         )}
-        {error && <p className="mt-4 text-red-400">{error}</p>}
         
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <label className="block text-sm text-white/80">
@@ -100,8 +121,18 @@ export default function LoginPage() {
           </label>
           <label className="block text-sm text-white/80">
             Password
-            <input name="password" value={form.password} onChange={handleChange} required type="password" className="mt-2 w-full rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
+            <input name="password" value={form.password} onChange={handleChange} required={hasFirebaseConfig} type="password" className="mt-2 w-full rounded-2xl border border-white/10 bg-black/80 px-4 py-3 text-white outline-none focus:border-primary" />
           </label>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={resetLoading}
+              className="text-xs text-primary hover:underline font-semibold"
+            >
+              {resetLoading ? 'Sending reset email...' : 'Forgot Password?'}
+            </button>
+          </div>
           <button disabled={loading} type="submit" className="w-full rounded-full bg-primary px-5 py-3 text-sm font-semibold text-black transition hover:bg-white disabled:opacity-50">
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
@@ -112,6 +143,13 @@ export default function LoginPage() {
           <button onClick={handleGoogleSignIn} disabled={googleLoading} className="mt-4 inline-flex items-center justify-center gap-2 w-full rounded-full border border-white/10 bg-black/80 px-5 py-3 text-sm font-semibold text-white transition hover:border-primary hover:text-primary disabled:opacity-50">
             {googleLoading ? 'Loading…' : 'Continue with Google'}
           </button>
+        </div>
+
+        <div className="mt-6 text-center text-sm text-white/70">
+          Don't have an account?{' '}
+          <Link to="/register" className="font-semibold text-primary hover:underline">
+            Register here
+          </Link>
         </div>
       </div>
 
